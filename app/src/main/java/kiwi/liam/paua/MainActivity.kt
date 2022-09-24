@@ -20,6 +20,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.dsl.module
 
 class MainActivity : ComponentActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,12 +32,13 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 appServices,
                 appRouters,
                 viewModels,
+                module { applicationContext },
             )
         }
 
         // Start detecting trips
         val tripDetectionService: TripDetectionService by inject()
-        tripDetectionService.startService()
+//        tripDetectionService.startService()
 
         setContent {
             PauaTheme {

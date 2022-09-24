@@ -45,20 +45,7 @@ fun OnTripView(trip: Trip?) {
                 .fillMaxWidth()
         ) {
             TripStopsList(
-                stops = listOf(
-                    "Wellington Station",
-                    "Ngauranga Station",
-                    "Petone Station",
-                    "Waterloo Station",
-                    "Taita Station",
-                    "Pomare Station",
-                    "Manor Park Station",
-                    "Silverstream Station",
-                    "Heretaunga Station",
-                    "Trentham Station",
-                    "Wallaceville Station",
-                    "Upper Hutt Station"
-                )
+                stops = trip?.stops ?: emptyList(),
             )
         }
     }
