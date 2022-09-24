@@ -8,7 +8,7 @@ import androidx.compose.material.icons.rounded.DirectionsSubway
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import kiwi.liam.paua.dependencies.managers.TransitManager
-import kiwi.liam.paua.dependencies.managers.TransitManagerState
+import kiwi.liam.paua.dependencies.managers.TransitState
 import kiwi.liam.paua.dependencies.models.TransitType
 import kiwi.liam.paua.tools.BaseViewModel
 import kiwi.liam.paua.ui.theme.icons
@@ -16,7 +16,7 @@ import org.koin.core.component.inject
 
 class WalletViewModel : BaseViewModel() {
     private val transitManager: TransitManager by inject()
-    private val transitManagerState: TransitManagerState by inject()
+    private val transitManagerState: TransitState by inject()
     val transactions = transitManagerState.transactions
 
     init {

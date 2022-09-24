@@ -12,13 +12,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import kiwi.liam.paua.dependencies.appRouters
 import kiwi.liam.paua.dependencies.appServices
 import kiwi.liam.paua.dependencies.serviceStates
+import kiwi.liam.paua.dependencies.services.TripDetectionService
 import kiwi.liam.paua.dependencies.viewModels
 import kiwi.liam.paua.routers.AppRouterView
 import kiwi.liam.paua.ui.theme.PauaTheme
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +33,10 @@ class MainActivity : ComponentActivity() {
                 viewModels,
             )
         }
+
+        // Start detecting trips
+        val tripDetectionService: TripDetectionService by inject()
+        tripDetectionService.startService()
 
         setContent {
             PauaTheme {

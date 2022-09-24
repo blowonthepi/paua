@@ -13,17 +13,14 @@ import androidx.compose.ui.graphics.RectangleShape
 import kiwi.liam.paua.ui.theme.Dimens
 
 private enum class StopPosition {
-    Start,
-    Mid,
-    End,
+    Start, Mid, End,
 }
 
 @Composable
 fun TripStopsList(stops: List<String>) {
     Row(
         Modifier.padding(
-            vertical = Dimens.padding8dp,
-            horizontal = Dimens.padding24dp
+            vertical = Dimens.padding8dp, horizontal = Dimens.padding24dp
         ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -42,7 +39,12 @@ fun TripStopsList(stops: List<String>) {
             stops.forEach { stop ->
                 Text(
                     stop,
-                    modifier = Modifier.padding(Dimens.padding12dp),
+                    modifier = Modifier
+                        .height(Dimens.padding24dp.times(2))
+                        .padding(
+                            horizontal = Dimens.padding12dp,
+                            vertical = Dimens.padding8dp,
+                        ),
                     style = MaterialTheme.typography.h6,
                 )
             }

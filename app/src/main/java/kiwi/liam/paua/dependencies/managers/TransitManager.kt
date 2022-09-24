@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import kiwi.liam.paua.dependencies.models.Transaction
 import kiwi.liam.paua.dependencies.models.TransitType
 
-class TransitManagerState {
+class TransitState {
     var balanceCents by mutableStateOf(0)
     var transactions = mutableListOf<Transaction>()
 }
@@ -15,7 +15,7 @@ interface TransitManager {
     fun fetchTransactions()
 }
 
-class AppTransitManager(val state: TransitManagerState) : TransitManager {
+class AppTransitManager(val state: TransitState) : TransitManager {
     override fun fetchTransactions() {
         val transactionList = listOf(
             Transaction(

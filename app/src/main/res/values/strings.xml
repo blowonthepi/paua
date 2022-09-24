@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pāua</string>
+
+    <string name="screen_onTrip_headline">You\'re on a %1$s service.</string>
 </resources>
