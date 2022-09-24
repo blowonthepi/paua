@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import kiwi.liam.paua.dependencies.models.Transaction
 import kiwi.liam.paua.ui.components.TransitCircle
+import kiwi.liam.paua.ui.components.TripStopsList
 import kiwi.liam.paua.ui.theme.Dimens
 import kiwi.liam.paua.ui.theme.Typography
 import kiwi.liam.paua.ui.theme.icons
@@ -51,18 +52,20 @@ fun WalletScreen() {
 @Composable
 private fun TransactionList() {
     val viewModel: WalletViewModel = getViewModel()
+    var expandedTransaction by remember { mutableStateOf<Transaction?>(null) }
 
     @Composable
-    fun TransactionItem(transaction: Transaction) {
-        var isExpanded by remember { mutableStateOf(false) }
-        Card(
-            modifier = Modifier
-                .padding(Dimens.padding8dp)
-                .fillMaxWidth(),
+    fun TransactionItem(
+        transaction: Transaction,
+        isExpanded: Boolean,
+        onClick: (Transaction) -> Unit,
+    ) {
+        Card(modifier = Modifier
+            .padding(Dimens.padding8dp)
+            .fillMaxWidth(),
             elevation = Dimens.padding4dp,
             shape = MaterialTheme.shapes.medium,
-            onClick = { isExpanded = !isExpanded }
-        ) {
+            onClick = { onClick(transaction) }) {
             Column {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -76,9 +79,11 @@ private fun TransactionList() {
                             icon = viewModel.getTransitIcon(transaction.type), routeIdentifier = transaction.routeId
                         )
                         Text(
-                            transaction.routeName, style = MaterialTheme.typography.subtitle2.copy(
+                            transaction.routeName,
+                            style = MaterialTheme.typography.subtitle2.copy(
                                 fontSize = 18.sp,
-                            ), modifier = Modifier.padding(Dimens.padding4dp)
+                            ),
+                            modifier = Modifier.padding(Dimens.padding4dp),
                         )
                     }
                     Icon(
@@ -92,18 +97,7 @@ private fun TransactionList() {
                     enter = expandVertically() + fadeIn(),
                     exit = fadeOut() + shrinkVertically(),
                 ) {
-                    Column(
-                        modifier = Modifier.padding(Dimens.padding8dp),
-                    ) {
-                        transaction.stops.forEach { stop ->
-                            val stopName = when (transaction.stops.indexOf(stop)) {
-                                0 -> "Start: $stop"
-                                transaction.stops.size - 1 -> "End: $stop"
-                                else -> stop
-                            }
-                            Text(stopName)
-                        }
-                    }
+                    TripStopsList(stops = transaction.stops)
                 }
             }
         }
@@ -119,7 +113,15 @@ private fun TransactionList() {
         )
         LazyColumn(Modifier.fillMaxHeight()) {
             items(viewModel.transactions) { transaction ->
-                TransactionItem(transaction)
+                TransactionItem(
+                    transaction, isExpanded = expandedTransaction == transaction,
+                    onClick = {
+                        expandedTransaction = when (expandedTransaction) {
+                            transaction -> null
+                            else -> transaction
+                        }
+                    },
+                )
             }
         }
     }

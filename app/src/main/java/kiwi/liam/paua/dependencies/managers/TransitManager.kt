@@ -43,6 +43,7 @@ class AppTransitManager(val state: TransitManagerState) : TransitManager {
                 stops = listOf(
                     "Wgtn Uni - Stop A",
                     "Wellington Station - Stop D",
+                    "Lambton Quay - Willis Street",
                 ),
             ),
             Transaction(
