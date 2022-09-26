@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import components.DevActions
 import kiwi.liam.paua.R
 
 interface TopBarRouterDelegate {
@@ -24,9 +25,10 @@ interface TopBarRouterDelegate {
 
 @Composable
 fun TopBar() {
+
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
-        elevation = 0.dp,
+        title = { Text(stringResource(id = R.string.app_name)) }, elevation = 0.dp,
+        actions = { DevActions() },
         modifier = Modifier
             .padding(
                 top = WindowInsets.statusBars

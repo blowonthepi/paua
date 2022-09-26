@@ -7,6 +7,9 @@ import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
 import android.os.ParcelUuid
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kiwi.liam.paua.dependencies.managers.TransitManager
 import kiwi.liam.paua.dependencies.models.TransitType
 import kiwi.liam.paua.dependencies.models.Trip
@@ -60,7 +63,10 @@ class MockTripDetectionService(
 ) : TripDetectionService {
     var mockTripJob: Job? = null
 
+    var isServiceRunning by mutableStateOf(false)
+
     override fun startService() {
+        isServiceRunning = true
         mockTripJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 delay(10000L)
@@ -82,7 +88,16 @@ class MockTripDetectionService(
     }
 
     override fun stopService() {
+        isServiceRunning = false
         mockTripJob?.cancel()
         state.currentTrip.value = null
+    }
+
+    fun toggleService() {
+        if (isServiceRunning) {
+            stopService()
+        } else {
+            startService()
+        }
     }
 }
