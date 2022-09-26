@@ -41,7 +41,7 @@ fun WalletScreen() {
                             contentDescription = "Top up plus icon",
                         )
                     },
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.topUp() },
                 )
             }
         }

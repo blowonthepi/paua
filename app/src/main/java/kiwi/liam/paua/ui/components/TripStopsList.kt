@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import kiwi.liam.paua.ui.theme.Dimens
 
@@ -65,6 +66,16 @@ private fun StopCircle(position: StopPosition) {
         else -> 0.5f
     }
 
+    val outerColor = when (position) {
+        StopPosition.Mid -> Color.Transparent
+        else -> MaterialTheme.colors.primary
+    }
+
+    val innerColor = when (position) {
+        StopPosition.Mid -> MaterialTheme.colors.primary
+        else -> MaterialTheme.colors.primaryVariant
+    }
+
     Box(
         Modifier
             .height(Dimens.padding24dp.times(2))
@@ -81,14 +92,14 @@ private fun StopCircle(position: StopPosition) {
             Modifier
                 .clip(CircleShape)
                 .size(Dimens.padding24dp)
-                .background(MaterialTheme.colors.primary)
+                .background(outerColor)
                 .align(Alignment.Center)
         )
         Box(
             Modifier
                 .clip(CircleShape)
                 .size(Dimens.padding12dp)
-                .background(MaterialTheme.colors.primaryVariant)
+                .background(innerColor)
                 .align(Alignment.Center)
         )
     }

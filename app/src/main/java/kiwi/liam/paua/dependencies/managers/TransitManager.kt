@@ -13,9 +13,12 @@ class TransitState {
 
 interface TransitManager {
     fun fetchTransactions()
+
+    fun topUp(valueCents: Int)
+    fun chargeAccount(valueCents: Int)
 }
 
-class AppTransitManager(val state: TransitState) : TransitManager {
+class AppTransitManager(private val state: TransitState) : TransitManager {
     override fun fetchTransactions() {
         val transactionList = listOf(
             Transaction(
@@ -57,6 +60,14 @@ class AppTransitManager(val state: TransitState) : TransitManager {
             ),
         )
         state.transactions.addAll(transactionList)
+    }
+
+    override fun topUp(valueCents: Int) {
+        state.balanceCents += valueCents
+    }
+
+    override fun chargeAccount(valueCents: Int) {
+        state.balanceCents -= valueCents
     }
 }
 
@@ -100,5 +111,13 @@ class MockTransitManager : TransitManager {
                 ),
             ),
         )
+    }
+
+    override fun topUp(valueCents: Int) {
+        // TODO
+    }
+
+    override fun chargeAccount(valueCents: Int) {
+        // TODO
     }
 }

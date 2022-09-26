@@ -20,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.get
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -51,9 +50,8 @@ class AppRouter : KoinComponent {
 }
 
 @Composable
-fun AppRouterView() {
+fun AppRouterView(router: AppRouter) {
     val systemUiController = rememberSystemUiController()
-    val router: AppRouter = get()
 
     if (isSystemInDarkTheme() && router.screen != AppRouterScreen.Splash) {
         systemUiController.setSystemBarsColor(
@@ -74,7 +72,7 @@ fun AppRouterView() {
 
             }
             AppRouterScreen.Tabs -> {
-                TabRouterView()
+                TabRouterView(router = TabRouter())
             }
         }
     }

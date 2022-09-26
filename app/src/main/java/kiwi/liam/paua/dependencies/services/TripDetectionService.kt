@@ -7,12 +7,12 @@ import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
 import android.os.ParcelUuid
+import kiwi.liam.paua.dependencies.managers.TransitManager
 import kiwi.liam.paua.dependencies.models.TransitType
 import kiwi.liam.paua.dependencies.models.Trip
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class TripDetectionState {
     var isOnTrip = MutableStateFlow(false)
@@ -26,8 +26,8 @@ interface TripDetectionService {
 
 class AppTripDetectionService(
     private val state: TripDetectionState,
+    private val context: Context,
 ) : TripDetectionService, KoinComponent, AdvertiseCallback() {
-    private val context: Context by inject()
     private val manager: BluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val advertiser: BluetoothLeAdvertiser = manager.adapter.bluetoothLeAdvertiser
 
@@ -54,7 +54,10 @@ class AppTripDetectionService(
 
 }
 
-class MockTripDetectionService(private val state: TripDetectionState) : TripDetectionService {
+class MockTripDetectionService(
+    private val state: TripDetectionState,
+    private val transitManager: TransitManager,
+) : TripDetectionService {
     var mockTripJob: Job? = null
 
     override fun startService() {
@@ -62,6 +65,9 @@ class MockTripDetectionService(private val state: TripDetectionState) : TripDete
             while (true) {
                 delay(10000L)
                 state.isOnTrip.value = !state.isOnTrip.value
+                if (!state.isOnTrip.value) {
+                    transitManager.chargeAccount(100)
+                }
             }
         }
         state.currentTrip.value = Trip(

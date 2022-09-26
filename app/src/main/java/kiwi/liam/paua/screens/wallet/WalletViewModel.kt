@@ -23,6 +23,11 @@ class WalletViewModel : BaseViewModel() {
         transitManager.fetchTransactions()
     }
 
+    fun topUp() {
+        // Fake a $1 top-up for this Proof of concept
+        transitManager.topUp(100)
+    }
+
     fun getAccountBalance(): String {
         val dollars: Double = transitManagerState.balanceCents / 100.0
 
