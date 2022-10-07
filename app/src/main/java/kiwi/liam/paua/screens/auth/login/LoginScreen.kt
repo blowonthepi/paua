@@ -33,6 +33,9 @@ fun LoginScreen(
             stringResource(id = R.string.screen_login_title),
             style = MaterialTheme.typography.h3,
         )
+        viewModel.errorMsg?.let {
+            Text(it, color = MaterialTheme.colors.error)
+        }
         TextField(
             value = viewModel.email,
             onValueChange = {

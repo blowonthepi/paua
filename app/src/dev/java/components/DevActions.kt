@@ -1,25 +1,24 @@
 package components
 
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.rounded.PlayCircle
 import androidx.compose.material.icons.rounded.StopCircle
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import kiwi.liam.paua.dependencies.services.MockTripDetectionService
 import kiwi.liam.paua.dependencies.services.TripDetectionService
 import kiwi.liam.paua.ui.theme.icons
 import org.koin.androidx.compose.get
 
 @Composable
-fun RowScope.DevActions() {
+fun DevActions() {
     val tripDetectionService: TripDetectionService = get()
+
+    var menuIsExpanded by remember { mutableStateOf(false) }
 
     if (tripDetectionService is MockTripDetectionService) {
         IconButton(
             onClick = {
-                tripDetectionService.toggleService()
+                menuIsExpanded = true
             },
         ) {
             Icon(
@@ -27,6 +26,23 @@ fun RowScope.DevActions() {
                 else MaterialTheme.icons.PlayCircle,
                 contentDescription = null,
             )
+        }
+
+        DropdownMenu(
+            expanded = menuIsExpanded,
+            onDismissRequest = { menuIsExpanded = false },
+        ) {
+            tripDetectionService.availableTrips.forEach { trip ->
+                DropdownMenuItem(
+                    onClick = {
+                        menuIsExpanded = false
+                        tripDetectionService.selectedTrip = trip
+                        tripDetectionService.startService()
+                    }
+                ) {
+                    Text(trip.route)
+                }
+            }
         }
     }
 }

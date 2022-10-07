@@ -3,10 +3,14 @@ package kiwi.liam.paua.routers
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kiwi.liam.paua.dependencies.models.Card
+import kiwi.liam.paua.dependencies.services.FirestoreService
 import kiwi.liam.paua.screens.account.AccountNavigationDelegate
 import kiwi.liam.paua.screens.account.AccountScreen
 import kiwi.liam.paua.screens.account.views.DisputeTravel
@@ -14,6 +18,12 @@ import kiwi.liam.paua.screens.account.views.ManageCard
 import kiwi.liam.paua.screens.account.views.findBusStops.FindBusStops
 import kiwi.liam.paua.screens.account.views.findBusStops.FindBusStopsViewModel
 import kiwi.liam.paua.ui.components.TopBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 data class Destination(val destination: String) {
     companion object {
@@ -24,8 +34,33 @@ data class Destination(val destination: String) {
     }
 }
 
+class AccountScreenRouter : KoinComponent {
+    private val firestoreService: FirestoreService by inject()
+    private var card by mutableStateOf<Card?>(null)
+
+    init {
+        CoroutineScope(Dispatchers.Main).launch {
+            firestoreService.getSavedCard().collectLatest {
+                card = it
+            }
+        }
+    }
+
+    private fun updateCard(card: Card) {
+        CoroutineScope(Dispatchers.IO).launch {
+            firestoreService.updateSavedCard(card)
+        }
+    }
+
+    @Composable
+    fun manageCardView() = ManageCard(
+        card = card,
+        updateCard = { updateCard(it) },
+    )
+}
+
 @Composable
-fun AccountScreenRouterView() {
+fun AccountScreenRouterView(router: AccountScreenRouter) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -67,7 +102,7 @@ fun AccountScreenRouterView() {
                     }
                 )
             }
-            composable(Destination.ManageSavedCards.destination) { ManageCard() }
+            composable(Destination.ManageSavedCards.destination) { router.manageCardView() }
             composable(Destination.FindBusStops.destination) { FindBusStops(FindBusStopsViewModel()) }
             composable(Destination.DisputeTravel.destination) { DisputeTravel() }
         }

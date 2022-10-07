@@ -12,8 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kiwi.liam.paua.dependencies.managers.AuthManager
 import kiwi.liam.paua.dependencies.managers.AuthManagerState
+import kiwi.liam.paua.dependencies.managers.TransitManager
 import kiwi.liam.paua.dependencies.services.TripDetectionState
 import kiwi.liam.paua.screens.onTrip.OnTripView
 import kiwi.liam.paua.screens.splash.SplashScreen
@@ -21,13 +21,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 enum class AppRouterScreen { Splash, Auth, Tabs }
 
 class AppRouter : KoinComponent {
-    private val authManager: AuthManager by inject()
+    private val transitManager: TransitManager by inject()
     private val authManagerState: AuthManagerState by inject()
     private val tripDetectionState: TripDetectionState by inject()
 
@@ -48,11 +49,19 @@ class AppRouter : KoinComponent {
         CoroutineScope(Dispatchers.Main).launch {
             authManagerState.user.collectLatest {
                 it?.let {
+                    withContext(Dispatchers.Default) { onAuthenticated() }
                     screen = AppRouterScreen.Tabs
                 } ?: run {
                     screen = AppRouterScreen.Auth
                 }
             }
+        }
+    }
+
+    private suspend fun onAuthenticated() {
+        transitManager.fetchBalance()
+        CoroutineScope(Dispatchers.IO).launch {
+            transitManager.fetchTransactions()
         }
     }
 }

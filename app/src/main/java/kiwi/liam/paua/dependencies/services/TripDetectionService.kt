@@ -1,12 +1,10 @@
 package kiwi.liam.paua.dependencies.services
 
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.AdvertiseCallback
-import android.bluetooth.le.AdvertiseData
-import android.bluetooth.le.AdvertiseSettings
-import android.bluetooth.le.BluetoothLeAdvertiser
+import android.bluetooth.le.*
 import android.content.Context
 import android.os.ParcelUuid
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +14,7 @@ import kiwi.liam.paua.dependencies.models.Trip
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.component.KoinComponent
+import java.util.*
 
 class TripDetectionState {
     var isOnTrip = MutableStateFlow(false)
@@ -30,29 +29,33 @@ interface TripDetectionService {
 class AppTripDetectionService(
     private val state: TripDetectionState,
     private val context: Context,
-) : TripDetectionService, KoinComponent, AdvertiseCallback() {
+) : TripDetectionService, KoinComponent, ScanCallback() {
     private val manager: BluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    private val advertiser: BluetoothLeAdvertiser = manager.adapter.bluetoothLeAdvertiser
+    private val advertiser: BluetoothLeScanner = manager.adapter.bluetoothLeScanner
 
     override fun startService() {
-
-        advertiser.startAdvertising(
-            AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                .build(),
-            AdvertiseData.Builder()
-                .addServiceUuid(ParcelUuid.fromString("1111"))
-                .build(),
-            this,
-        )
+        val uuid = UUID.fromString("75a718f2-0a7d-476b-8c3c-b9c9f38559f3")
+        val serviceUuidMaskString = "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
+        val parcelUuidMask = ParcelUuid.fromString(serviceUuidMaskString)
+        val filter: ScanFilter = ScanFilter.Builder()
+            .setServiceUuid(ParcelUuid(uuid), parcelUuidMask)
+            .build()
+        advertiser.startScan(listOf(filter), ScanSettings.Builder().build(), this)
     }
 
     override fun stopService() {
-        advertiser.stopAdvertising(this)
+        advertiser.stopScan(this)
     }
 
-    override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-        super.onStartSuccess(settingsInEffect)
+    override fun onScanResult(callbackType: Int, result: ScanResult?) {
+        super.onScanResult(callbackType, result)
+        Log.i("ScanResult", result?.advertisingSid?.toString() ?: "NONE")
+
+    }
+
+    override fun onScanFailed(errorCode: Int) {
+        super.onScanFailed(errorCode)
+        Log.e("ScanFailed", "Ble scan failed")
     }
 
 }
@@ -60,23 +63,15 @@ class AppTripDetectionService(
 class MockTripDetectionService(
     private val state: TripDetectionState,
     private val transitManager: TransitManager,
+    private val firestoreService: FirestoreService,
 ) : TripDetectionService {
     var mockTripJob: Job? = null
 
     var isServiceRunning by mutableStateOf(false)
 
-    override fun startService() {
-        isServiceRunning = true
-        mockTripJob = CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
-                delay(10000L)
-                state.isOnTrip.value = !state.isOnTrip.value
-                if (!state.isOnTrip.value) {
-                    transitManager.chargeAccount(100)
-                }
-            }
-        }
-        state.currentTrip.value = Trip(
+    val availableTrips = listOf(
+        Trip(
+            routeId = "WHF",
             route = "Days Bay Ferry",
             type = TransitType.Ferry,
             stops = listOf(
@@ -84,20 +79,47 @@ class MockTripDetectionService(
                 "Matiu/Sommes Wharf",
                 "Days Bay Wharf"
             )
+        ),
+        Trip(
+            routeId = "HVL",
+            route = "Hutt Valley Line",
+            type = TransitType.Train,
+            stops = listOf(
+                "Wellington Station",
+                "Upper Hutt Station",
+            )
+        ),
+        Trip(
+            routeId = "22",
+            route = "Wellington Station",
+            type = TransitType.Bus,
+            stops = listOf(
+                "Wgtn Uni - Stop B",
+                "Wellington Station - Stop D",
+            )
         )
+    )
+
+    var selectedTrip by mutableStateOf(availableTrips[0])
+
+    override fun startService() {
+        if (isServiceRunning) return
+
+        isServiceRunning = true
+        state.currentTrip.value = selectedTrip
+        state.isOnTrip.value = true
+        mockTripJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(10000L)
+            stopService()
+            transitManager.chargeAccount(100)
+            firestoreService.addTrip(selectedTrip)
+        }
     }
 
     override fun stopService() {
         isServiceRunning = false
         mockTripJob?.cancel()
         state.currentTrip.value = null
-    }
-
-    fun toggleService() {
-        if (isServiceRunning) {
-            stopService()
-        } else {
-            startService()
-        }
+        state.isOnTrip.value = false
     }
 }

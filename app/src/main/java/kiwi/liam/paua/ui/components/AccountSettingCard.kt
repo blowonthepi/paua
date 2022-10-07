@@ -9,6 +9,7 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
 import kiwi.liam.paua.ui.theme.Dimens
@@ -19,6 +20,7 @@ import kiwi.liam.paua.ui.theme.icons
 fun AccountSettingCard(
     label: String,
     icon: ImageVector,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     onClick: () -> Unit,
 ) {
     Card(
@@ -27,6 +29,7 @@ fun AccountSettingCard(
             .fillMaxWidth(),
         elevation = Dimens.padding4dp,
         shape = MaterialTheme.shapes.medium,
+        backgroundColor = backgroundColor,
         onClick = onClick,
     ) {
         Row(

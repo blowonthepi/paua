@@ -6,24 +6,18 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import components.DevActions
 import kiwi.liam.paua.R
 import kiwi.liam.paua.ui.theme.icons
 
-interface TopBarRouterDelegate {
-
-    fun showWalletScreen()
-    fun showAccountScreen()
-}
-
 @Composable
 fun TopBar(backAction: (() -> Unit)? = null) {
 
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) }, elevation = 0.dp,
+        title = { Text(stringResource(id = R.string.app_name)) },
+        elevation = 0.dp,
         navigationIcon = backAction?.let {
             {
                 IconButton(onClick = it) {
@@ -42,7 +36,6 @@ fun TopBar(backAction: (() -> Unit)? = null) {
                     .calculateTopPadding()
             )
             .fillMaxWidth()
-            .shadow(4.dp)
             .background(MaterialTheme.colors.primarySurface),
     )
 }

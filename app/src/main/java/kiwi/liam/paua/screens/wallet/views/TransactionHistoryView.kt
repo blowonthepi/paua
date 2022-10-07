@@ -10,8 +10,10 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kiwi.liam.paua.R
 import kiwi.liam.paua.dependencies.models.Transaction
 import kiwi.liam.paua.ui.components.TransitCircle
 import kiwi.liam.paua.ui.components.TripStopsList
@@ -32,13 +34,20 @@ fun TransactionHistoryView(
             modifier = Modifier.padding(Dimens.padding8dp),
             style = MaterialTheme.typography.h6,
         )
-        LazyColumn(Modifier.fillMaxHeight()) {
-            items(transactions) { transaction ->
-                TransactionItem(
-                    transaction,
-                    isExpanded = expandedTransaction == transaction,
-                    onClick = { onClick(transaction) },
-                )
+
+        if (transactions.isEmpty()) {
+            Text(
+                stringResource(id = R.string.screen_wallet_emptyTransactions)
+            )
+        } else {
+            LazyColumn(Modifier.fillMaxHeight()) {
+                items(transactions) { transaction ->
+                    TransactionItem(
+                        transaction,
+                        isExpanded = expandedTransaction == transaction,
+                        onClick = { onClick(transaction) },
+                    )
+                }
             }
         }
     }

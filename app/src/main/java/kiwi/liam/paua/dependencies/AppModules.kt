@@ -24,9 +24,9 @@ val serviceStates = module {
 }
 
 val appServices = module {
-    single<AuthManager> { AppAuthManager(get()) }
+    single<AuthManager> { AppAuthManager(get(), get()) }
     single<TransitManager> { AppTransitManager(get(), get()) }
-    single<TripDetectionService> { MockTripDetectionService(get(), get()) }
+    single<TripDetectionService> { MockTripDetectionService(get(), get(), get()) }
     single<TopologyManager> { AppTopologyManager(get()) }
     single<FirestoreService> { AppFirestoreService(get(), get()) }
 
@@ -49,5 +49,5 @@ val viewModels = module {
 val mockAppServices = module {
     single<AuthManager> { MockAuthManager() }
     single<TransitManager> { MockTransitManager(get()) }
-    single<TripDetectionService> { MockTripDetectionService(get(), get()) }
+    single<TripDetectionService> { MockTripDetectionService(get(), get(), get()) }
 }
