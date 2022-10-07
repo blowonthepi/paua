@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Pāua</string>
+
+    <string name="screen_onTrip_headline">You\'re on a %1$s service.</string>
+
+    <string name="screen_account_namePlaceholder">Liam Edwards</string>
+
+    <string name="screen_auth_emailLabel">Email</string>
+    <string name="screen_auth_passwordLabel">Password</string>
+
+    <string name="screen_login_title">Login</string>
+    <string name="screen_login_signUpButton">Need an account? Sign up</string>
+
+    <string name="screen_signup_title">Signup</string>
+    <string name="screen_signup_loginButton">Have an account? Login</string>
 </resources>

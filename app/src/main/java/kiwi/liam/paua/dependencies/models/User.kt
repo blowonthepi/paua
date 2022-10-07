@@ -1,8 +1,6 @@
 package kiwi.liam.paua.dependencies.models
 
-import java.util.*
-
 data class User(
-    var uid: UUID,
+    var uid: String,
     var name: String,
 )

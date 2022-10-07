@@ -2,6 +2,12 @@
 <resources>
 
     <style name="Theme.Paua" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/primaryVariant</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
 </resources>

@@ -1,21 +1,15 @@
 package kiwi.liam.paua.screens.wallet
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import kiwi.liam.paua.dependencies.models.Transaction
-import kiwi.liam.paua.ui.components.TransitCircle
-import kiwi.liam.paua.ui.components.TripStopsList
+import kiwi.liam.paua.screens.wallet.views.TransactionHistoryView
+import kiwi.liam.paua.ui.components.TopBar
 import kiwi.liam.paua.ui.theme.Dimens
 import kiwi.liam.paua.ui.theme.Typography
 import kiwi.liam.paua.ui.theme.icons
@@ -25,104 +19,51 @@ import org.koin.androidx.compose.getViewModel
 fun WalletScreen() {
     val viewModel: WalletViewModel = getViewModel()
 
-    Column {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(Dimens.padding8dp), horizontalArrangement = Arrangement.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    viewModel.getAccountBalance(),
-                    style = Typography.h3,
-                    fontWeight = FontWeight.Bold,
-                )
-                ExtendedFloatingActionButton(
-                    text = { Text("Top up") },
-                    icon = { Icon(MaterialTheme.icons.Add, contentDescription = "Top up plus icon") },
-                    onClick = { /*TODO*/ },
-                )
+    Scaffold(
+        topBar = { TopBar() },
+    ) {
+        Column {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(Dimens.padding8dp), horizontalArrangement = Arrangement.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        viewModel.getAccountBalance(),
+                        style = Typography.h3,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    ExtendedFloatingActionButton(
+                        text = { Text("Top up") },
+                        icon = {
+                            Icon(
+                                MaterialTheme.icons.Add,
+                                contentDescription = "Top up plus icon",
+                            )
+                        },
+                        onClick = { viewModel.topUp() },
+                    )
+                }
             }
+            TransactionList()
         }
-        TransactionList()
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TransactionList() {
     val viewModel: WalletViewModel = getViewModel()
     var expandedTransaction by remember { mutableStateOf<Transaction?>(null) }
 
-    @Composable
-    fun TransactionItem(
-        transaction: Transaction,
-        isExpanded: Boolean,
-        onClick: (Transaction) -> Unit,
-    ) {
-        Card(modifier = Modifier
-            .padding(Dimens.padding8dp)
-            .fillMaxWidth(),
-            elevation = Dimens.padding4dp,
-            shape = MaterialTheme.shapes.medium,
-            onClick = { onClick(transaction) }) {
-            Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .padding(Dimens.padding12dp)
-                        .fillMaxWidth(),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TransitCircle(
-                            icon = viewModel.getTransitIcon(transaction.type), routeIdentifier = transaction.routeId
-                        )
-                        Text(
-                            transaction.routeName,
-                            style = MaterialTheme.typography.subtitle2.copy(
-                                fontSize = 18.sp,
-                            ),
-                            modifier = Modifier.padding(Dimens.padding4dp),
-                        )
-                    }
-                    Icon(
-                        if (isExpanded) MaterialTheme.icons.KeyboardArrowUp
-                        else MaterialTheme.icons.KeyboardArrowDown,
-                        contentDescription = null,
-                    )
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = expandVertically() + fadeIn(),
-                    exit = fadeOut() + shrinkVertically(),
-                ) {
-                    TripStopsList(stops = transaction.stops)
-                }
+    TransactionHistoryView(
+        transactions = viewModel.transactions,
+        expandedTransaction = expandedTransaction,
+        onClick = {
+            expandedTransaction = when (expandedTransaction) {
+                it -> null
+                else -> it
             }
         }
-    }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Divider(Modifier.padding(Dimens.padding8dp))
-
-        Text(
-            "Transaction History",
-            modifier = Modifier.padding(Dimens.padding8dp),
-            style = MaterialTheme.typography.h6,
-        )
-        LazyColumn(Modifier.fillMaxHeight()) {
-            items(viewModel.transactions) { transaction ->
-                TransactionItem(
-                    transaction, isExpanded = expandedTransaction == transaction,
-                    onClick = {
-                        expandedTransaction = when (expandedTransaction) {
-                            transaction -> null
-                            else -> transaction
-                        }
-                    },
-                )
-            }
-        }
-    }
+    )
 }
