@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +11,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import kiwi.liam.paua.screens.wallet.WalletScreen
 import kiwi.liam.paua.ui.components.PauaBottomNavigation
-import kiwi.liam.paua.ui.components.TopBar
 import kiwi.liam.paua.ui.components.TopBarRouterDelegate
 
 enum class TabScreen {
@@ -47,7 +45,6 @@ class TabRouter : TopBarRouterDelegate {
 fun TabRouterView(router: TabRouter) {
 
     Scaffold(
-        topBar = { TopBar() },
         bottomBar = { router.bottomBar() },
     ) { padding ->
         Box(modifier = Modifier.padding(bottom = padding.calculateBottomPadding())) {
@@ -55,7 +52,7 @@ fun TabRouterView(router: TabRouter) {
             Crossfade(targetState = router.currentTab) {
                 when (it) {
                     TabScreen.Wallet -> WalletScreen()
-                    TabScreen.Account -> Text("Account")
+                    TabScreen.Account -> AccountScreenRouterView()
                 }
             }
         }

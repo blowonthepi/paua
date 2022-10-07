@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "615353061444",
+    "project_id": "paua-payments",
+    "storage_bucket": "paua-payments.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615353061444:android:937817a0c936696100ec11",
+        "android_client_info": {
+          "package_name": "kiwi.liam.paua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615353061444-a7r94a6i5bbgrmgeknr75ktg36trqk5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kiwi.liam.paua",
+            "certificate_hash": "5a0f3187a0c809a37b3dc01e05abb82054add4f5"
+          }
+        },
+        {
+          "client_id": "615353061444-05e81i4lpktpajl82g1vt3os1spsfht1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbkE5EReSWVCmDSuvgbw9Ctf0e7cIl9GI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615353061444-05e81i4lpktpajl82g1vt3os1spsfht1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

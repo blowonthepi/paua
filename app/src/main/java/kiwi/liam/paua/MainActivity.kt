@@ -10,38 +10,39 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import kiwi.liam.paua.dependencies.appServices
-import kiwi.liam.paua.dependencies.serviceStates
+import com.google.firebase.FirebaseApp
+import kiwi.liam.paua.dependencies.allKoinModules
+import kiwi.liam.paua.dependencies.managers.AuthManager
 import kiwi.liam.paua.dependencies.services.TripDetectionService
-import kiwi.liam.paua.dependencies.viewModels
 import kiwi.liam.paua.routers.AppRouter
 import kiwi.liam.paua.routers.AppRouterView
 import kiwi.liam.paua.ui.theme.PauaTheme
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 
 
 class MainActivity : ComponentActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startKoin {
-            modules(
-                serviceStates,
-                appServices,
-                viewModels,
-                module { applicationContext },
-            )
-        }
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
 
+        FirebaseApp.initializeApp(this)
+
+        startKoin {
+            modules(allKoinModules)
+            androidContext(this@MainActivity)
+        }
+
+        // Start Auth Listener
+        val authManager: AuthManager by inject()
+        authManager.listenToAuthStatus()
 
         // Start detecting trips
         val tripDetectionService: TripDetectionService by inject()

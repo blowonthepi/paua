@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kiwi.liam.paua.dependencies.models.Transaction
 import kiwi.liam.paua.ui.components.TransitCircle
@@ -64,7 +65,10 @@ private fun TransactionItem(
                     .padding(Dimens.padding12dp)
                     .fillMaxWidth(),
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(9f)
+                ) {
                     TransitCircle(
                         icon = transaction.getIcon(), routeIdentifier = transaction.routeId
                     )
@@ -80,6 +84,9 @@ private fun TransactionItem(
                     if (isExpanded) MaterialTheme.icons.KeyboardArrowUp
                     else MaterialTheme.icons.KeyboardArrowDown,
                     contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .weight(1f)
                 )
             }
             AnimatedVisibility(

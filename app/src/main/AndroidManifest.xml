@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="LockedOrientationActivity">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,6 +30,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-    </application>
 
+        <!-- Insecure, but best way for marking purposes -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDtrdcXMUMq1EnKQP3Mr6M4zcP10rPzSw4" />
+    </application>
 </manifest>

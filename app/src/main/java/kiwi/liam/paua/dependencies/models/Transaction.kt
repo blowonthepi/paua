@@ -1,10 +1,7 @@
 package kiwi.liam.paua.dependencies.models
 
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.rounded.DirectionsBoat
-import androidx.compose.material.icons.rounded.DirectionsBus
-import androidx.compose.material.icons.rounded.DirectionsRailway
-import androidx.compose.material.icons.rounded.DirectionsSubway
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import kiwi.liam.paua.ui.theme.icons
@@ -22,6 +19,7 @@ data class Transaction(
             TransitType.Train -> MaterialTheme.icons.DirectionsRailway
             TransitType.Ferry -> MaterialTheme.icons.DirectionsBoat
             TransitType.CableCar -> MaterialTheme.icons.DirectionsSubway
+            TransitType.Other -> MaterialTheme.icons.Directions
         }
     }
 }
