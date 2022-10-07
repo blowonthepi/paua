@@ -3,14 +3,30 @@
 
     <string name="screen_onTrip_headline">You\'re on a %1$s service.</string>
 
-    <string name="screen_account_namePlaceholder">Liam Edwards</string>
-
     <string name="screen_auth_emailLabel">Email</string>
     <string name="screen_auth_passwordLabel">Password</string>
 
     <string name="screen_login_title">Login</string>
     <string name="screen_login_signUpButton">Need an account? Sign up</string>
+    <string name="screen_login_error">Uh oh! Something went wrong.</string>
 
     <string name="screen_signup_title">Signup</string>
     <string name="screen_signup_loginButton">Have an account? Login</string>
+
+    <string name="screen_wallet_emptyTransactions">No transactions to display</string>
+
+    <string name="screen_account_savedCard_updateCard">Update card</string>
+    <string name="screen_account_signOut">Sign out</string>
+    <string name="screen_account_confirmAlert_title">Are you sure?</string>
+    <string name="screen_account_confirmAlert_msg">You won\'t be able to automatically tag on/off anymore.</string>
+
+    <string name="screen_account_transactionDisputed">Marked for Dispute</string>
+
+    <string name="screen_account_confirmAlert_cancel">Cancel</string>
+    <string name="screen_account_confirmAlert_confirm">Sign out</string>
+
+    <string name="screen_account_disputeTravel_title">Dispute Travel</string>
+    <string name="screen_account_disputeTravel_snackbarMsg">Dispute confirmed. We\'ll contact you soon.</string>
+
+    <string name="screen_account_manageCard_title">Manage Card</string>
 </resources>

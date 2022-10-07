@@ -11,23 +11,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import kiwi.liam.paua.screens.wallet.WalletScreen
 import kiwi.liam.paua.ui.components.PauaBottomNavigation
-import kiwi.liam.paua.ui.components.TopBarRouterDelegate
 
 enum class TabScreen {
     Wallet,
     Account
 }
 
-class TabRouter : TopBarRouterDelegate {
+class TabRouter {
     var currentTab by mutableStateOf(TabScreen.Wallet)
-
-    override fun showWalletScreen() {
-        currentTab = TabScreen.Wallet
-    }
-
-    override fun showAccountScreen() {
-        currentTab = TabScreen.Account
-    }
 
     @Composable
     fun bottomBar() {
@@ -40,7 +31,6 @@ class TabRouter : TopBarRouterDelegate {
     }
 }
 
-
 @Composable
 fun TabRouterView(router: TabRouter) {
 
@@ -52,7 +42,7 @@ fun TabRouterView(router: TabRouter) {
             Crossfade(targetState = router.currentTab) {
                 when (it) {
                     TabScreen.Wallet -> WalletScreen()
-                    TabScreen.Account -> AccountScreenRouterView()
+                    TabScreen.Account -> AccountScreenRouterView(router = AccountScreenRouter())
                 }
             }
         }

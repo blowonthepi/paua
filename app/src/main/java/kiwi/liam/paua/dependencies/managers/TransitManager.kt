@@ -1,5 +1,6 @@
 package kiwi.liam.paua.dependencies.managers
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import kiwi.liam.paua.dependencies.models.TransitType
 import kiwi.liam.paua.dependencies.services.FirestoreService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TransitState {
@@ -17,8 +19,8 @@ class TransitState {
 }
 
 interface TransitManager {
-    fun fetchBalance()
-    fun fetchTransactions()
+    suspend fun fetchBalance()
+    suspend fun fetchTransactions()
 
     fun topUp(valueCents: Int)
     fun chargeAccount(valueCents: Int)
@@ -28,15 +30,15 @@ class AppTransitManager(
     private val state: TransitState,
     private val firestoreService: FirestoreService,
 ) : TransitManager {
-    override fun fetchBalance() {
-        CoroutineScope(Dispatchers.IO).launch {
-            state.balanceCents = firestoreService.getUserBalanceCents()
-        }
+    override suspend fun fetchBalance() {
+        state.balanceCents = firestoreService.getUserBalanceCents()
     }
 
-    override fun fetchTransactions() {
-        CoroutineScope(Dispatchers.IO).launch {
-            state.transactions.addAll(firestoreService.getTransactionHistory())
+    override suspend fun fetchTransactions() {
+        firestoreService.getTransactionHistory().collectLatest {
+            Log.i("FoundTransactions", it.size.toString())
+            state.transactions.clear()
+            state.transactions.addAll(it)
         }
     }
 
@@ -59,11 +61,11 @@ class AppTransitManager(
 
 class MockTransitManager(private val state: TransitState) : TransitManager {
 
-    override fun fetchBalance() {
+    override suspend fun fetchBalance() {
         state.balanceCents = 0
     }
 
-    override fun fetchTransactions() {
+    override suspend fun fetchTransactions() {
         val transactionList = listOf(
             Transaction(
                 type = TransitType.Train,

@@ -1,22 +1,21 @@
 package kiwi.liam.paua.screens.wallet.views
 
-import androidx.compose.animation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import kiwi.liam.paua.R
 import kiwi.liam.paua.dependencies.models.Transaction
-import kiwi.liam.paua.ui.components.TransitCircle
-import kiwi.liam.paua.ui.components.TripStopsList
+import kiwi.liam.paua.ui.components.TransactionListItem
 import kiwi.liam.paua.ui.theme.Dimens
-import kiwi.liam.paua.ui.theme.icons
 
 @Composable
 fun TransactionHistoryView(
@@ -32,69 +31,20 @@ fun TransactionHistoryView(
             modifier = Modifier.padding(Dimens.padding8dp),
             style = MaterialTheme.typography.h6,
         )
-        LazyColumn(Modifier.fillMaxHeight()) {
-            items(transactions) { transaction ->
-                TransactionItem(
-                    transaction,
-                    isExpanded = expandedTransaction == transaction,
-                    onClick = { onClick(transaction) },
-                )
-            }
-        }
-    }
-}
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun TransactionItem(
-    transaction: Transaction,
-    isExpanded: Boolean,
-    onClick: (Transaction) -> Unit,
-) {
-    Card(modifier = Modifier
-        .padding(Dimens.padding8dp)
-        .fillMaxWidth(),
-        elevation = Dimens.padding4dp,
-        shape = MaterialTheme.shapes.medium,
-        onClick = { onClick(transaction) }) {
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(Dimens.padding12dp)
-                    .fillMaxWidth(),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(9f)
-                ) {
-                    TransitCircle(
-                        icon = transaction.getIcon(), routeIdentifier = transaction.routeId
-                    )
-                    Text(
-                        transaction.routeName,
-                        style = MaterialTheme.typography.subtitle2.copy(
-                            fontSize = 18.sp,
-                        ),
-                        modifier = Modifier.padding(Dimens.padding4dp),
+        if (transactions.isEmpty()) {
+            Text(
+                stringResource(id = R.string.screen_wallet_emptyTransactions)
+            )
+        } else {
+            LazyColumn(Modifier.fillMaxHeight()) {
+                items(transactions) { transaction ->
+                    TransactionListItem(
+                        transaction,
+                        isExpanded = expandedTransaction == transaction,
+                        onClick = { onClick(transaction) },
                     )
                 }
-                Icon(
-                    if (isExpanded) MaterialTheme.icons.KeyboardArrowUp
-                    else MaterialTheme.icons.KeyboardArrowDown,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .weight(1f)
-                )
-            }
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = expandVertically() + fadeIn(),
-                exit = fadeOut() + shrinkVertically(),
-            ) {
-                TripStopsList(stops = transaction.stops)
             }
         }
     }

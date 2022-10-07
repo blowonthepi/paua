@@ -13,7 +13,6 @@ import androidx.core.view.WindowCompat
 import com.google.firebase.FirebaseApp
 import kiwi.liam.paua.dependencies.allKoinModules
 import kiwi.liam.paua.dependencies.managers.AuthManager
-import kiwi.liam.paua.dependencies.services.TripDetectionService
 import kiwi.liam.paua.routers.AppRouter
 import kiwi.liam.paua.routers.AppRouterView
 import kiwi.liam.paua.ui.theme.PauaTheme
@@ -44,9 +43,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
         val authManager: AuthManager by inject()
         authManager.listenToAuthStatus()
 
-        // Start detecting trips
-        val tripDetectionService: TripDetectionService by inject()
-//        tripDetectionService.startService()
+        requestPermissions(arrayOf(android.Manifest.permission.BLUETOOTH_SCAN), 1)
 
         setContent {
             PauaTheme {

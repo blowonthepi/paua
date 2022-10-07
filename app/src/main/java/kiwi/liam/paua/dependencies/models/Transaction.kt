@@ -5,11 +5,14 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import kiwi.liam.paua.ui.theme.icons
+import java.util.*
 
 data class Transaction(
+    val id: String = UUID.randomUUID().toString(),
     val type: TransitType,
     val routeId: String,
     val routeName: String,
+    val disputed: Boolean = false,
     val stops: List<String>
 ) {
     @Composable

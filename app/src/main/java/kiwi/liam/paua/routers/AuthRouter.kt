@@ -6,14 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kiwi.liam.paua.screens.auth.login.LoginRouterDelegate
 import kiwi.liam.paua.screens.auth.login.LoginScreen
-import kiwi.liam.paua.screens.auth.login.LoginViewModel
 import kiwi.liam.paua.screens.auth.signup.SignupRouterDelegate
 import kiwi.liam.paua.screens.auth.signup.SignupScreen
-import kiwi.liam.paua.screens.auth.signup.SignupViewModel
 
 enum class AuthRouterScreen {
-    Login,
-    Signup
+    Login, Signup
 }
 
 class AuthRouter {
@@ -36,16 +33,10 @@ fun AuthRouter.signupDelegate() = object : SignupRouterDelegate {
 fun AuthRouterView(router: AuthRouter) {
     when (router.screen) {
         AuthRouterScreen.Login -> {
-            LoginScreen(
-                viewModel = LoginViewModel(),
-                delegate = router.loginDelegate(),
-            )
+            LoginScreen(delegate = router.loginDelegate())
         }
         AuthRouterScreen.Signup -> {
-            SignupScreen(
-                viewModel = SignupViewModel(),
-                delegate = router.signupDelegate(),
-            )
+            SignupScreen(delegate = router.signupDelegate())
         }
     }
 }

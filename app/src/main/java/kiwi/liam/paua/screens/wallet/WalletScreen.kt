@@ -58,12 +58,11 @@ private fun TransactionList() {
 
     TransactionHistoryView(
         transactions = viewModel.transactions,
-        expandedTransaction = expandedTransaction,
-        onClick = {
-            expandedTransaction = when (expandedTransaction) {
-                it -> null
-                else -> it
-            }
+        expandedTransaction = expandedTransaction
+    ) {
+        expandedTransaction = when (expandedTransaction) {
+            it -> null
+            else -> it
         }
-    )
+    }
 }
