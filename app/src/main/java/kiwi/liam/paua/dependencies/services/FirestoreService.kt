@@ -31,6 +31,8 @@ interface FirestoreService {
     suspend fun createUserDocument(uid: String)
 
     suspend fun addTrip(trip: Trip)
+
+    suspend fun disputeTransaction(transaction: Transaction)
 }
 
 class AppFirestoreService(
@@ -56,9 +58,11 @@ class AppFirestoreService(
                     val routeId = document.data["route_id"] as String
                     list.add(
                         Transaction(
+                            id = document.id,
                             routeId = routeId,
                             routeName = routes.firstOrNull { it.routeShortName == routeId }?.routeLongName ?: "",
                             type = TransitType.Train,
+                            disputed = document.data["disputed"] as Boolean? ?: false,
                             stops = document.data["stops"] as List<String>
                         )
                     )
@@ -138,6 +142,15 @@ class AppFirestoreService(
                 )
             )
     }
+
+    override suspend fun disputeTransaction(transaction: Transaction) {
+        firestore
+            .collection("users")
+            .document(userId)
+            .collection("trips")
+            .document(transaction.id)
+            .update("disputed", true)
+    }
 }
 
 class MockFirestoreService : FirestoreService {
@@ -148,6 +161,7 @@ class MockFirestoreService : FirestoreService {
     var didUpdateSavedCard = false
     var didCreateUserDocument = false
     var didAddTrip = false
+    var didDisputeTransaction = false
 
     override suspend fun getTransactionHistory(): Flow<List<Transaction>> = flow {
         didGetTransactionHistory = true
@@ -183,5 +197,9 @@ class MockFirestoreService : FirestoreService {
 
     override suspend fun addTrip(trip: Trip) {
         didAddTrip = true
+    }
+
+    override suspend fun disputeTransaction(transaction: Transaction) {
+        didDisputeTransaction = true
     }
 }

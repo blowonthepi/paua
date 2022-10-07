@@ -14,10 +14,8 @@ class AccountViewModel : BaseViewModel() {
 
     var isShowingConfirmAlert by mutableStateOf(false)
 
-    fun getUserName(): String? {
-        return authManagerState.user.value?.name?.ifEmpty {
-            null
-        }
+    fun getEmail(): String {
+        return authManagerState.user.value?.email ?: ""
     }
 
     fun signOut() {

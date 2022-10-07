@@ -2,10 +2,7 @@ package kiwi.liam.paua.screens.account
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.rounded.CreditCard
-import androidx.compose.material.icons.rounded.Logout
-import androidx.compose.material.icons.rounded.ModeOfTravel
-import androidx.compose.material.icons.rounded.Report
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +30,11 @@ fun AccountScreen(navigation: AccountNavigationDelegate) {
             .fillMaxSize()
             .padding(Dimens.padding8dp)
     ) {
+        AccountSettingCard(
+            title = "Currently logged in as",
+            label = viewModel.getEmail(),
+            icon = MaterialTheme.icons.Person,
+        )
         AccountSettingCard(
             label = "Manage saved card",
             icon = MaterialTheme.icons.CreditCard,

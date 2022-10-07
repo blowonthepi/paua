@@ -20,6 +20,13 @@
     <string name="screen_account_confirmAlert_title">Are you sure?</string>
     <string name="screen_account_confirmAlert_msg">You won\'t be able to automatically tag on/off anymore.</string>
 
+    <string name="screen_account_transactionDisputed">Marked for Dispute</string>
+
     <string name="screen_account_confirmAlert_cancel">Cancel</string>
     <string name="screen_account_confirmAlert_confirm">Sign out</string>
+
+    <string name="screen_account_disputeTravel_title">Dispute Travel</string>
+    <string name="screen_account_disputeTravel_snackbarMsg">Dispute confirmed. We\'ll contact you soon.</string>
+
+    <string name="screen_account_manageCard_title">Manage Card</string>
 </resources>

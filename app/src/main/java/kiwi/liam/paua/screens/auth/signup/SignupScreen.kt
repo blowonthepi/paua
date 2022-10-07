@@ -14,16 +14,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import kiwi.liam.paua.R
 import kiwi.liam.paua.ui.theme.Dimens
+import org.koin.androidx.compose.getViewModel
 
 interface SignupRouterDelegate {
     fun openLogin()
 }
 
 @Composable
-fun SignupScreen(
-    viewModel: SignupViewModel,
-    delegate: SignupRouterDelegate,
-) {
+fun SignupScreen(delegate: SignupRouterDelegate) {
+    val viewModel: SignupViewModel = getViewModel()
+
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

@@ -30,7 +30,7 @@ fun ManageCard(card: Card?, updateCard: (Card) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            "Manage saved card",
+            stringResource(id = R.string.screen_account_manageCard_title),
             style = MaterialTheme.typography.h4,
         )
 

@@ -13,8 +13,8 @@ import kiwi.liam.paua.dependencies.models.Card
 import kiwi.liam.paua.dependencies.services.FirestoreService
 import kiwi.liam.paua.screens.account.AccountNavigationDelegate
 import kiwi.liam.paua.screens.account.AccountScreen
-import kiwi.liam.paua.screens.account.views.DisputeTravel
 import kiwi.liam.paua.screens.account.views.ManageCard
+import kiwi.liam.paua.screens.account.views.disputeTravel.DisputeTravelView
 import kiwi.liam.paua.screens.account.views.findBusStops.FindBusStops
 import kiwi.liam.paua.screens.account.views.findBusStops.FindBusStopsViewModel
 import kiwi.liam.paua.ui.components.TopBar
@@ -104,7 +104,7 @@ fun AccountScreenRouterView(router: AccountScreenRouter) {
             }
             composable(Destination.ManageSavedCards.destination) { router.manageCardView() }
             composable(Destination.FindBusStops.destination) { FindBusStops(FindBusStopsViewModel()) }
-            composable(Destination.DisputeTravel.destination) { DisputeTravel() }
+            composable(Destination.DisputeTravel.destination) { DisputeTravelView() }
         }
     }
 }

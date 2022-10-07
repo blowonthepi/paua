@@ -8,10 +8,11 @@ import kiwi.liam.paua.ui.theme.icons
 import java.util.*
 
 data class Transaction(
-    val id: UUID = UUID.randomUUID(),
+    val id: String = UUID.randomUUID().toString(),
     val type: TransitType,
     val routeId: String,
     val routeName: String,
+    val disputed: Boolean = false,
     val stops: List<String>
 ) {
     @Composable

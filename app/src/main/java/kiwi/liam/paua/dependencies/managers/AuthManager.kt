@@ -1,5 +1,6 @@
 package kiwi.liam.paua.dependencies.managers
 
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
@@ -34,10 +35,7 @@ class AppAuthManager(
     override fun listenToAuthStatus() {
         auth.addAuthStateListener {
             auth.currentUser?.let {
-                state.user.value = User(
-                    uid = it.uid,
-                    name = it.displayName ?: "",
-                )
+                setUserFromFirebase(it)
             }
         }
     }
@@ -45,10 +43,8 @@ class AppAuthManager(
     override suspend fun signIn(email: String, password: String): Boolean {
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
-            state.user.value = User(
-                uid = result.user?.uid ?: "",
-                name = result.user?.displayName ?: "",
-            )
+
+            result?.user?.let { setUserFromFirebase(it) }
 
             true
         } catch (e: FirebaseFirestoreException) {
@@ -59,13 +55,10 @@ class AppAuthManager(
     override fun signUp(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                state.user.value = User(
-                    uid = it.user?.uid ?: "",
-                    name = it.user?.displayName ?: "",
-                )
-                it.user?.uid?.let {
+                it.user?.let { user ->
+                    setUserFromFirebase(user)
                     CoroutineScope(Dispatchers.IO).launch {
-                        firestoreService.createUserDocument(it)
+                        firestoreService.createUserDocument(user.uid)
                     }
                 }
             }
@@ -74,6 +67,13 @@ class AppAuthManager(
     override fun signOut() {
         auth.signOut()
         state.user.value = null
+    }
+
+    private fun setUserFromFirebase(user: FirebaseUser) {
+        state.user.value = User(
+            uid = user.uid,
+            email = user.email ?: "",
+        )
     }
 }
 
