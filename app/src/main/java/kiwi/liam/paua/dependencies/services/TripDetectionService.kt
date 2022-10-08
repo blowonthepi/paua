@@ -1,9 +1,10 @@
 package kiwi.liam.paua.dependencies.services
 
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.*
+import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.Context
-import android.os.ParcelUuid
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,29 +29,75 @@ interface TripDetectionService {
 
 class AppTripDetectionService(
     private val state: TripDetectionState,
-    private val context: Context,
+    private val transitManager: TransitManager,
+    private val firestoreService: FirestoreService,
+    context: Context,
 ) : TripDetectionService, KoinComponent, ScanCallback() {
     private val manager: BluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    private val advertiser: BluetoothLeScanner = manager.adapter.bluetoothLeScanner
+    private val scanner: BluetoothLeScanner = manager.adapter.bluetoothLeScanner
+
+    var numberOfNonCurrentUUID = 0
 
     override fun startService() {
-        val uuid = UUID.fromString("75a718f2-0a7d-476b-8c3c-b9c9f38559f3")
-        val serviceUuidMaskString = "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
-        val parcelUuidMask = ParcelUuid.fromString(serviceUuidMaskString)
-        val filter: ScanFilter = ScanFilter.Builder()
-            .setServiceUuid(ParcelUuid(uuid), parcelUuidMask)
-            .build()
-        advertiser.startScan(listOf(filter), ScanSettings.Builder().build(), this)
+//        val uuid = UUID.fromString("75A718F2-0000-0000-0000-000000000000")
+//        val serviceUuidMaskString = "FFFFFFFF-0000-0000-0000-000000000000"
+//        val parcelUuidMask = ParcelUuid.fromString(serviceUuidMaskString)
+//        val filter: ScanFilter = ScanFilter.Builder()
+//            .setServiceUuid(ParcelUuid(uuid), parcelUuidMask)
+//            .build()
+//        scanner.startScan(listOf(filter), ScanSettings.Builder().build(), this)
+        scanner.startScan(this)
     }
 
     override fun stopService() {
-        advertiser.stopScan(this)
+        scanner.stopScan(this)
     }
 
-    override fun onScanResult(callbackType: Int, result: ScanResult?) {
+    override fun onScanResult(callbackType: Int, result: ScanResult) {
         super.onScanResult(callbackType, result)
-        Log.i("ScanResult", result?.advertisingSid?.toString() ?: "NONE")
 
+        val buses = mapOf(
+            "059ac44b-45bc-386c-908e-ab0fed155efc" to "22"
+        )
+
+        val stops = mapOf(
+            "22" to listOf(
+                "Wellington Station",
+                "Wgtn Uni - Stop A",
+            ),
+        )
+
+        val uuid = with(result.scanRecord) {
+            Log.i("ScanResult", UUID.nameUUIDFromBytes(this?.bytes ?: byteArrayOf()).toString())
+            UUID.nameUUIDFromBytes(this?.bytes ?: byteArrayOf())
+        }.toString()
+
+        val current = buses[uuid]
+        if (current != null) {
+            numberOfNonCurrentUUID = 0
+            if (state.currentTrip.value?.routeId != current) {
+                state.isOnTrip.value = !state.isOnTrip.value
+                state.currentTrip.value = Trip(
+                    routeId = current,
+                    route = "Service for $current",
+                    type = TransitType.Train,
+                    stops = stops[current] ?: emptyList(),
+                )
+            }
+        } else if (numberOfNonCurrentUUID > 10) {
+            if (state.isOnTrip.value) {
+                state.isOnTrip.value = false
+                transitManager.chargeAccount(100)
+                CoroutineScope(Dispatchers.IO).launch {
+                    state.currentTrip.value?.let {
+                        firestoreService.addTrip(it)
+                    }
+                    state.currentTrip.value = null
+                }
+            }
+        } else {
+            numberOfNonCurrentUUID++
+        }
     }
 
     override fun onScanFailed(errorCode: Int) {

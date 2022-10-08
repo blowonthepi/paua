@@ -43,7 +43,17 @@ class MainActivity : ComponentActivity(), KoinComponent {
         val authManager: AuthManager by inject()
         authManager.listenToAuthStatus()
 
-        requestPermissions(arrayOf(android.Manifest.permission.BLUETOOTH_SCAN), 1)
+        requestPermissions(
+            arrayOf(
+                android.Manifest.permission.BLUETOOTH_SCAN,
+                android.Manifest.permission.BLUETOOTH_CONNECT,
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            ), 1
+        )
+
+//        val tripDetectionService: TripDetectionService by inject()
+//        tripDetectionService.startService()
 
         setContent {
             PauaTheme {
