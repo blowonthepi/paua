@@ -29,7 +29,9 @@ val serviceStates = module {
 val appServices = module {
     single<AuthManager> { AppAuthManager(get(), get()) }
     single<TransitManager> { AppTransitManager(get(), get()) }
+    // Comment out either AppTripDetection or MockTripDetection depending which service is required.
     single<TripDetectionService> { MockTripDetectionService(get(), get(), get()) }
+//    single<TripDetectionService> { AppTripDetectionService(get(), get(), get(), get()) }
     single<TopologyManager> { AppTopologyManager(get()) }
     single<FirestoreService> { AppFirestoreService(get(), get()) }
 
@@ -41,7 +43,6 @@ val appServices = module {
     }
 
     single { PauaAPIService(get(), get()) }
-//    single<TripDetectionService> { AppTripDetectionService(get(), get()) }
 }
 
 val viewModels = module {
