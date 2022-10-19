@@ -32,7 +32,8 @@ class TabRouter {
 }
 
 @Composable
-fun TabRouterView(router: TabRouter) {
+fun TabRouterView() {
+    val router = TabRouter()
 
     Scaffold(
         bottomBar = { router.bottomBar() },

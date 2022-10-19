@@ -34,7 +34,6 @@ class AppRouter : KoinComponent {
 
     var screen by mutableStateOf(AppRouterScreen.Splash)
     var showOnTripOverlay by mutableStateOf(false)
-    var currentTrip = tripDetectionState.currentTrip
 
     init {
         checkAuthStatus()
@@ -67,7 +66,9 @@ class AppRouter : KoinComponent {
 }
 
 @Composable
-fun AppRouterView(router: AppRouter) {
+fun AppRouterView() {
+    val router = AppRouter()
+
     val systemUiController = rememberSystemUiController()
 
     if (isSystemInDarkTheme() && router.screen != AppRouterScreen.Splash) {
@@ -86,10 +87,10 @@ fun AppRouterView(router: AppRouter) {
                 SplashScreen()
             }
             AppRouterScreen.Auth -> {
-                AuthRouterView(router = AuthRouter())
+                AuthRouterView()
             }
             AppRouterScreen.Tabs -> {
-                TabRouterView(router = TabRouter())
+                TabRouterView()
             }
         }
     }
@@ -100,7 +101,7 @@ fun AppRouterView(router: AppRouter) {
         exit = fadeOut() + slideOutVertically { it },
     ) {
         Surface(Modifier.fillMaxSize()) {
-            OnTripView(router.currentTrip.value)
+            OnTripView()
         }
     }
 }

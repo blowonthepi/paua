@@ -22,12 +22,18 @@ import androidx.compose.ui.unit.dp
 import kiwi.liam.paua.R
 import kiwi.liam.paua.dependencies.models.TransitType
 import kiwi.liam.paua.dependencies.models.Trip
+import kiwi.liam.paua.dependencies.services.TripDetectionState
 import kiwi.liam.paua.ui.components.TripStopsList
 import kiwi.liam.paua.ui.theme.Dimens
 import kiwi.liam.paua.ui.theme.icons
+import org.koin.androidx.compose.get
+import org.koin.core.component.inject
 
 @Composable
-fun OnTripView(trip: Trip?) {
+fun OnTripView() {
+    val tripDetectionState: TripDetectionState = get()
+    val trip = tripDetectionState.currentTrip.value
+
     Column(
         Modifier
             .padding(Dimens.padding8dp)
