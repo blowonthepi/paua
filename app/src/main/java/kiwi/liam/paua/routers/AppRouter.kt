@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.primarySurface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kiwi.liam.paua.dependencies.managers.AuthManagerState
@@ -67,7 +64,9 @@ class AppRouter : KoinComponent {
 }
 
 @Composable
-fun AppRouterView(router: AppRouter) {
+fun AppRouterView() {
+    val router = remember { AppRouter() }
+
     val systemUiController = rememberSystemUiController()
 
     if (isSystemInDarkTheme() && router.screen != AppRouterScreen.Splash) {
