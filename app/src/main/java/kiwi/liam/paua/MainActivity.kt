@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
         setContent {
             PauaTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    AppRouterView()
+                    AppRouterView(router = AppRouter())
                 }
             }
         }

@@ -19,20 +19,18 @@ class AuthRouter {
 
 fun AuthRouter.loginDelegate() = object : LoginRouterDelegate {
     override fun openSignup() {
-        screen = AuthRouterScreen.Signup
+        this@loginDelegate.screen = AuthRouterScreen.Signup
     }
 }
 
 fun AuthRouter.signupDelegate() = object : SignupRouterDelegate {
     override fun openLogin() {
-        screen = AuthRouterScreen.Login
+        this@signupDelegate.screen = AuthRouterScreen.Login
     }
 }
 
 @Composable
-fun AuthRouterView() {
-    val router = AuthRouter()
-
+fun AuthRouterView(router: AuthRouter) {
     when (router.screen) {
         AuthRouterScreen.Login -> {
             LoginScreen(delegate = router.loginDelegate())
